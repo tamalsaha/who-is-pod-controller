@@ -63,35 +63,33 @@
 
 [[override]]
   name = "k8s.io/api"
-  branch = "ac-1.12.0"
-  source = "github.com/pharmer/api"
+  version = "kubernetes-1.11.3"
 
 [[override]]
   name = "k8s.io/apiextensions-apiserver"
-  version = "kubernetes-1.12.0"
+  version = "kubernetes-1.11.3"
 
 [[override]]
   name = "k8s.io/apimachinery"
-  branch = "ac-1.12.0"
+  branch = "release-1.11.3"
   source = "github.com/pharmer/apimachinery"
 
 [[override]]
   name = "k8s.io/apiserver"
-  branch = "ac-1.12.0"
+  branch = "release-1.11.3"
   source = "github.com/pharmer/apiserver"
 
 [[override]]
   name = "k8s.io/client-go"
-  branch = "ac-1.12.0"
-  source = "github.com/pharmer/client-go"
+  version = "kubernetes-1.11.3"
 
 [[override]]
   name = "k8s.io/kubernetes"
-  version = "v1.12.0"
+  version = "=v1.11.3"
 
 [[override]]
   name = "k8s.io/kube-openapi"
-  revision = "0cf8f7e6ed1d2e3d47d02e3b6e559369af24d803"
+  revision = "91cfa479c814065e420cee7ed227db0f63a5854e"
 
 [[override]]
   name = "github.com/appscode/docker-registry-client"
@@ -107,11 +105,11 @@
 
 [[override]]
   name = "github.com/Azure/azure-sdk-for-go"
-  version = "v19.0.0"
+  version = "v14.6.0"
 
 [[override]]
   name = "github.com/Azure/go-autorest"
-  version = "v10.14.0"
+  version = "v10.6.2"
 
 [[override]]
   name = "github.com/docker/distribution"
@@ -119,7 +117,7 @@
 
 [[override]]
   name = "github.com/docker/docker"
-  revision = "a9fbbdc8dd8794b20af358382ab780559bca589d"
+  revision = "4f3616fb1c112e206b88cb7a9922bf49067a7756"
 
 [[override]]
   name = "github.com/docker/go-connections"

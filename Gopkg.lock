@@ -36,6 +36,18 @@
   revision = "0499c350ad263174dc8c1e3006b2d3300ff398e6"
 
 [[projects]]
+  branch = "master"
+  digest = "1:a34549b0aa1af841fb1d2556c94fd29b8020a1de6be458935464a6127de22844"
+  name = "github.com/appscode/kutil"
+  packages = [
+    ".",
+    "admissionregistration/v1beta1",
+    "tools/watch",
+  ]
+  pruneopts = "UT"
+  revision = "1cd17dd7a600228ee3ede5ded9ebd30a60546fe3"
+
+[[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
   name = "github.com/davecgh/go-spew"
   packages = ["spew"]
@@ -217,6 +229,14 @@
   version = "v2.0.1"
 
 [[projects]]
+  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
   digest = "1:dab83a1bbc7ad3d7a6ba1a1cc1760f25ac38cdf7d96a5cdd55cd915a4f5ceaf9"
   name = "github.com/spf13/pflag"
   packages = ["."]
@@ -339,8 +359,7 @@
   version = "v2.2.1"
 
 [[projects]]
-  branch = "ac-1.12.0"
-  digest = "1:910ec974550174f4ca48b9f4a3caec16b693e584c3762dc726dc0dcf28f8e318"
+  digest = "1:6163e6e8fcdb2c545db15aa5fe492fb5c2d59ad54f58fa1cba07f12ceac6d77b"
   name = "k8s.io/api"
   packages = [
     "admissionregistration/v1alpha1",
@@ -354,12 +373,10 @@
     "authorization/v1beta1",
     "autoscaling/v1",
     "autoscaling/v2beta1",
-    "autoscaling/v2beta2",
     "batch/v1",
     "batch/v1beta1",
     "batch/v2alpha1",
     "certificates/v1beta1",
-    "coordination/v1beta1",
     "core/v1",
     "events/v1beta1",
     "extensions/v1beta1",
@@ -376,12 +393,12 @@
     "storage/v1beta1",
   ]
   pruneopts = "UT"
-  revision = "99a12a82c6758e20cd528070bf8f197919296567"
-  source = "github.com/pharmer/api"
+  revision = "4e7be11eab3ffcfc1876898b8272df53785a9504"
+  version = "kubernetes-1.11.3"
 
 [[projects]]
-  branch = "ac-1.12.0"
-  digest = "1:99dec669db890b92bdc12d877cfe33352e3938efc049eda92fc61a1bdf137716"
+  branch = "release-1.11.3"
+  digest = "1:081926c8fd52bbda3321adda82f957b106b89a37dbf29e302efcf8cae5247fba"
   name = "k8s.io/apimachinery"
   packages = [
     "pkg/api/errors",
@@ -412,25 +429,26 @@
     "pkg/util/framer",
     "pkg/util/intstr",
     "pkg/util/json",
-    "pkg/util/naming",
+    "pkg/util/mergepatch",
     "pkg/util/net",
     "pkg/util/runtime",
     "pkg/util/sets",
+    "pkg/util/strategicpatch",
     "pkg/util/validation",
     "pkg/util/validation/field",
     "pkg/util/wait",
     "pkg/util/yaml",
     "pkg/version",
     "pkg/watch",
+    "third_party/forked/golang/json",
     "third_party/forked/golang/reflect",
   ]
   pruneopts = "UT"
-  revision = "8d7a0c3d7f0948197f384288363dfe20cd1f00e4"
+  revision = "cbad0ea24d3adbf8cc3c0c1b4077b79828119584"
   source = "github.com/pharmer/apimachinery"
 
 [[projects]]
-  branch = "ac-1.12.0"
-  digest = "1:21b20bbde3b995a5b8e63aa8840748f1e5fbe0a84ed39d0fa5fde46a00b4fe85"
+  digest = "1:59be0a3cd2b4e7c7b18a935a18a1995e0429104126c462192bf4c00696c6119f"
   name = "k8s.io/client-go"
   packages = [
     "discovery",
@@ -447,12 +465,10 @@
     "kubernetes/typed/authorization/v1beta1",
     "kubernetes/typed/autoscaling/v1",
     "kubernetes/typed/autoscaling/v2beta1",
-    "kubernetes/typed/autoscaling/v2beta2",
     "kubernetes/typed/batch/v1",
     "kubernetes/typed/batch/v1beta1",
     "kubernetes/typed/batch/v2alpha1",
     "kubernetes/typed/certificates/v1beta1",
-    "kubernetes/typed/coordination/v1beta1",
     "kubernetes/typed/core/v1",
     "kubernetes/typed/events/v1beta1",
     "kubernetes/typed/extensions/v1beta1",
@@ -489,7 +505,6 @@
     "tools/metrics",
     "tools/pager",
     "tools/reference",
-    "tools/watch",
     "transport",
     "util/buffer",
     "util/cert",
@@ -501,14 +516,24 @@
     "util/retry",
   ]
   pruneopts = "UT"
-  revision = "fc239b8203672f1a8a16779c2cfd1f99844df219"
-  source = "github.com/pharmer/client-go"
+  revision = "2cefa64ff137e128daeddbd1775cd775708a05bf"
+  version = "kubernetes-1.11.3"
+
+[[projects]]
+  digest = "1:a2c842a1e0aed96fd732b535514556323a6f5edfded3b63e5e0ab1bce188aa54"
+  name = "k8s.io/kube-openapi"
+  packages = ["pkg/util/proto"]
+  pruneopts = "UT"
+  revision = "91cfa479c814065e420cee7ed227db0f63a5854e"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/appscode/go/log",
+    "github.com/appscode/kutil/admissionregistration/v1beta1",
+    "github.com/appscode/kutil/tools/watch",
+    "k8s.io/api/admissionregistration/v1beta1",
     "k8s.io/apimachinery/pkg/api/meta",
     "k8s.io/apimachinery/pkg/apis/meta/v1",
     "k8s.io/apimachinery/pkg/fields",
@@ -519,7 +544,6 @@
     "k8s.io/client-go/rest",
     "k8s.io/client-go/tools/cache",
     "k8s.io/client-go/tools/clientcmd",
-    "k8s.io/client-go/tools/watch",
     "k8s.io/client-go/util/homedir",
   ]
   solver-name = "gps-cdcl"

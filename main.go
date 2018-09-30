@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"k8s.io/apimachinery/pkg/api/meta"
 	"path/filepath"
-	"time"
 
 	"github.com/appscode/go/log"
+	admreg_util "github.com/appscode/kutil/admissionregistration/v1beta1"
+	watchtools "github.com/appscode/kutil/tools/watch"
+	"k8s.io/api/admissionregistration/v1beta1"
+	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -17,19 +20,8 @@ import (
 	_ "k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
-	watchtools "k8s.io/client-go/tools/watch"
 	"k8s.io/client-go/util/homedir"
 )
-
-type ObservableObject interface {
-	GetResourceVersion() string
-	GetGeneration() int64
-	GetDeletionTimestamp() *metav1.Time
-	GetLabels() map[string]string
-	GetAnnotations() map[string]string
-	//GetObservedGeneration() int64
-	//GetObservedGenerationHash() string
-}
 
 func main() {
 	masterURL := ""
@@ -39,31 +31,38 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not get Kubernetes config: %s", err)
 	}
-	err = rest.LoadTLSFiles(config)
+	err = UpdateCA(config, "validators.kubedb.com")
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalf("unable to get token for service account: %v", err)
 	}
-	kc := kubernetes.NewForConfigOrDie(config)
 
-	hooks, err := kc.AdmissionregistrationV1beta1().ValidatingWebhookConfigurations().List(metav1.ListOptions{
-		FieldSelector: fields.OneTermEqualSelector("metadata.name", "validators.kubedb.com").String(),
-	})
-	for _, h := range hooks.Items {
-		fmt.Println(h.Name)
+	fmt.Println("DONE")
+}
+
+func UpdateCA(config *rest.Config, name string) error {
+	err := rest.LoadTLSFiles(config)
+	if err != nil {
+		return err
 	}
+
+	kc := kubernetes.NewForConfigOrDie(config)
 
 	lw := &cache.ListWatch{
 		ListFunc: func(options metav1.ListOptions) (runtime.Object, error) {
-			options.FieldSelector = fields.OneTermEqualSelector("metadata.name", "validators.kubedb.com").String()
+			options.FieldSelector = fields.OneTermEqualSelector("metadata.name", name).String()
 			return kc.AdmissionregistrationV1beta1().ValidatingWebhookConfigurations().List(options)
 		},
 		WatchFunc: func(options metav1.ListOptions) (watch.Interface, error) {
-			options.FieldSelector = fields.OneTermEqualSelector("metadata.name", "validators.kubedb.com").String()
+			options.FieldSelector = fields.OneTermEqualSelector("metadata.name", name).String()
 			return kc.AdmissionregistrationV1beta1().ValidatingWebhookConfigurations().Watch(options)
 		},
 	}
 
-	_, err = watchtools.ListWatchUntil(30*time.Second, lw,
+	ctx := context.Background()
+	_, err = watchtools.UntilWithSync(ctx,
+		lw,
+		&v1beta1.ValidatingWebhookConfiguration{},
+		nil,
 		func(event watch.Event) (bool, error) {
 			a, _ := meta.Accessor(event.Object)
 			fmt.Println(event.Type, a.GetName())
@@ -74,12 +73,17 @@ func main() {
 			case watch.Error:
 				return false, fmt.Errorf("error watching")
 			case watch.Added, watch.Modified:
-				return true, nil
+				cur := event.Object.(*v1beta1.ValidatingWebhookConfiguration)
+				_, _, err := admreg_util.PatchValidatingWebhookConfiguration(kc, cur, func(in *v1beta1.ValidatingWebhookConfiguration) *v1beta1.ValidatingWebhookConfiguration {
+					for i := range in.Webhooks {
+						in.Webhooks[i].ClientConfig.CABundle = config.CAData
+					}
+					return in
+				})
+				return err == nil, err
 			default:
 				return false, fmt.Errorf("unexpected event type: %v", event.Type)
 			}
 		})
-	if err != nil {
-		log.Fatalf("unable to get token for service account: %v", err)
-	}
+	return err
 }
