@@ -31,7 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not get Kubernetes config: %s", err)
 	}
-	err = UpdateCA(config, "validators.kubedb.com")
+	err = UpdateValidatingWebhookCABundle(config, "validators.kubedb.com")
 	if err != nil {
 		log.Fatalf("unable to get token for service account: %v", err)
 	}
@@ -39,7 +39,7 @@ func main() {
 	fmt.Println("DONE")
 }
 
-func UpdateCA(config *rest.Config, name string) error {
+func UpdateValidatingWebhookCABundle(config *rest.Config, name string) error {
 	err := rest.LoadTLSFiles(config)
 	if err != nil {
 		return err
