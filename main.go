@@ -1,16 +1,16 @@
 package main
 
 import (
+	api "github.com/kubedb/apimachinery/apis/kubedb/v1alpha1"
 	"bytes"
 	"context"
 	"fmt"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	"path/filepath"
 
 	"github.com/appscode/go/log"
 	admreg_util "github.com/appscode/kutil/admissionregistration/v1beta1"
- "github.com/appscode/kutil/discovery"
+	"github.com/appscode/kutil/discovery"
 	watchtools "github.com/appscode/kutil/tools/watch"
 	"k8s.io/api/admissionregistration/v1beta1"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -18,9 +18,9 @@ import (
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/watch"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
@@ -39,16 +39,26 @@ func main() {
 		log.Fatalf("unable to get token for service account: %v", err)
 	}
 
-	TestWebhook(config)
-
-	fmt.Println("DONE")
-
 	d := Detector{
 		config: config,
-		obj: nil,
+		obj: &api.Postgres{
+			TypeMeta: metav1.TypeMeta{
+				APIVersion: api.SchemeGroupVersion.String(),
+				Kind:       api.ResourceKindPostgres,
+			},
+			ObjectMeta: metav1.ObjectMeta{
+				Namespace: "default",
+				Name:      "webhook-activation-detection",
+			},
+			Spec: api.PostgresSpec{
+
+			},
+		},
 		op: v1beta1.Create,
 	}
 	d.check()
+
+	fmt.Println("DONE")
 }
 
 /*
@@ -71,9 +81,12 @@ func (d Detector) check() error {
 	dc, _ := dynamic.NewForConfig(d.config)
 
 	gvk := d.obj.GetObjectKind().GroupVersionKind()
-	gvr, _ := discovery.ResourceForGVK(kc.Discovery(), gvk)
+	fmt.Println("GVK = ", gvk)
 
-	accessor := meta.Accessor(d.obj)
+	gvr, _ := discovery.ResourceForGVK(kc.Discovery(), gvk)
+	fmt.Println("GVR = ", gvr)
+
+	accessor, _ := meta.Accessor(d.obj)
 
 	var ri dynamic.ResourceInterface
 
@@ -99,22 +112,6 @@ func (d Detector) check() error {
 
 
 	}
-
-
-
-	return nil
-}
-
-func TestWebhook(config *rest.Config) error {
-	kc := kubernetes.NewForConfigOrDie(config)
-
-
-
-
-	// kc.Discovery().
-	dc, _ := dynamic.NewForConfig(config)
-
-	dc.Resource().Namespace("").Delete()
 
 	return nil
 }
