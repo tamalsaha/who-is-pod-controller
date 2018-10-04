@@ -1,13 +1,16 @@
 package main
 
 import (
+	"encoding/json"
+	"github.com/evanphx/json-patch"
 	api "github.com/kubedb/apimachinery/apis/kubedb/v1alpha1"
 	"bytes"
 	"context"
 	"fmt"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/types"
 	"path/filepath"
-
+	kerr "k8s.io/apimachinery/pkg/api/errors"
 	"github.com/appscode/go/log"
 	admreg_util "github.com/appscode/kutil/admissionregistration/v1beta1"
 	"github.com/appscode/kutil/discovery"
@@ -51,6 +54,9 @@ func main() {
 				Name:      "webhook-activation-detection",
 			},
 			Spec: api.PostgresSpec{
+				Version: "9.6-v1",
+				TerminationPolicy: api.TerminationPolicyWipeOut,
+
 
 			},
 		},
@@ -91,7 +97,7 @@ func (d Detector) check() error {
 	var ri dynamic.ResourceInterface
 
 	if accessor.GetNamespace() != "" {
-		ri = dc.Resource(gvr).Namespace("")
+		ri = dc.Resource(gvr).Namespace(accessor.GetNamespace())
 	} else {
 		dc.Resource(gvr)
 	}
@@ -102,15 +108,59 @@ func (d Detector) check() error {
 	u := unstructured.Unstructured{}
 	unstructured.UnstructuredJSONScheme.Decode(buf.Bytes(), nil, &u)
 
-	_, err := ri.Create(&u)
-	fmt.Println(err)
-
-
-
 	if d.op == v1beta1.Create {
-		// ri.Create(d.obj)
+		_, err := ri.Create(&u)
+		fmt.Println(err)
 
+		if kerr.IsForbidden(err) {
+			// admission webhook "postgres.validators.kubedb.com" denied the request: spec.replicas "<nil>" invalid. Value must be greater than zero
+			fmt.Println(kerr.ReasonForError(err))
+			fmt.Println(err.Error())
+		} else if err == nil {
+			_ = ri.Delete(accessor.GetName(), &metav1.DeleteOptions{})
+		} else {
+			// some other error
+		}
 
+	} else if d.op == v1beta1.Update {
+		_, err := ri.Create(&u)
+		fmt.Println(err)
+
+		mod := d.obj.DeepCopyObject()
+		d.transform(mod)
+		modJson, err := json.Marshal(mod)
+
+		patch, err := jsonpatch.CreateMergePatch(buf.Bytes(), modJson)
+		if err != nil {
+			return err
+
+		}
+
+		_, err = ri.Patch(accessor.GetName(), types.MergePatchType, patch)
+
+		if kerr.IsForbidden(err) {
+			// admission webhook "postgres.validators.kubedb.com" denied the request: spec.replicas "<nil>" invalid. Value must be greater than zero
+			fmt.Println(kerr.ReasonForError(err))
+			fmt.Println(err.Error())
+		} else if err == nil {
+		} else {
+			// some other error
+		}
+
+		_ = ri.Delete(accessor.GetName(), &metav1.DeleteOptions{})
+	} else if d.op == v1beta1.Delete {
+		_, err := ri.Create(&u)
+		fmt.Println(err)
+
+		err = ri.Delete(accessor.GetName(), &metav1.DeleteOptions{})
+		if kerr.IsForbidden(err) {
+			// admission webhook "postgres.validators.kubedb.com" denied the request: spec.replicas "<nil>" invalid. Value must be greater than zero
+			fmt.Println(kerr.ReasonForError(err))
+			fmt.Println(err.Error())
+		} else if err == nil {
+		} else {
+			// some other error
+		}
 	}
 
 	return nil

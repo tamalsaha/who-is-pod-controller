@@ -1,5 +1,5 @@
-hash: 844bcd34732b00e2c1ebf3771e715e6d617395a1db33a33f78b6a6fec314f44c
-updated: 2018-10-04T14:28:05.654740631-07:00
+hash: ffaa3792fefcf3adbd84b9aaa302a00f7905e1bcd11425e60ce35b2eaf66fac8
+updated: 2018-10-04T14:33:21.513074256-07:00
 imports:
 - name: github.com/appscode/go
   version: 0499c350ad263174dc8c1e3006b2d3300ff398e6
@@ -53,10 +53,12 @@ imports:
 - name: github.com/golang/protobuf
   version: b4deda0973fb4c70b50d226b1af49f3da59f5265
   subpackages:
+  - jsonpb
   - proto
   - ptypes
   - ptypes/any
   - ptypes/duration
+  - ptypes/struct
   - ptypes/timestamp
 - name: github.com/google/btree
   version: 7d79101e329e5a3adf994758c578dab82b90c017
@@ -204,7 +206,9 @@ imports:
   - pkg/client/clientset/clientset/scheme
   - pkg/client/clientset/clientset/typed/apiextensions/v1beta1
 - name: k8s.io/apimachinery
-  version: def12e63c512da17043b4f0293f52d1006603d9f
+  version: cbad0ea24d3adbf8cc3c0c1b4077b79828119584
+  repo: https://github.com/pharmer/apimachinery.git
+  vcs: git
   subpackages:
   - pkg/api/errors
   - pkg/api/meta
@@ -248,7 +252,9 @@ imports:
   - third_party/forked/golang/json
   - third_party/forked/golang/reflect
 - name: k8s.io/client-go
-  version: 7d04d0e2a0a1a4d4a1cd6baa432a2301492e4e65
+  version: 805859b028aa45844e5d3b699d1dfad9eed753ad
+  repo: https://github.com/pharmer/client-go.git
+  vcs: git
   subpackages:
   - discovery
   - dynamic
