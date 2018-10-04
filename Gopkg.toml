@@ -25,41 +25,9 @@
   branch = "master"
   name = "github.com/appscode/go"
 
-[[constraint]]
-  name = "github.com/appscode/mergo"
-  version = "v0.3.6"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/golang/glog"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/google/go-cmp"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/yudai/gojsondiff"
-
-[[constraint]]
-  name = "github.com/json-iterator/go"
-  version = "v1.1.5"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/appscode/go-version"
-
 [[override]]
   name = "github.com/russross/blackfriday"
   revision = "300106c228d52c8941d4b3de6054a6062a86dda3"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/spf13/afero"
-
-[[constraint]]
-  name = "github.com/fsnotify/fsnotify"
-  version = "v1.4.7"
 
 [[override]]
   name = "k8s.io/api"
