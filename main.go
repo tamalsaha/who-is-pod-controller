@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"path/filepath"
 	"strings"
-
+	du "github.com/appscode/kutil/dynamic"
 	"github.com/appscode/go/log"
 	"github.com/golang/glog"
 	"k8s.io/api/core/v1"
@@ -28,8 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("Could not get Kubernetes config: %s", err)
 	}
-
-	w, err := DetectWorkload(config, v1.SchemeGroupVersion.WithResource("pods"), "voyager-operator-7f445b7c94-sc9vg", "kube-system")
+	w, err := du.DetectWorkload(config, v1.SchemeGroupVersion.WithResource("pods"), "kube-system", "voyager-operator-7f445b7c94-sc9vg")
 	if err != nil {
 		log.Fatal(err)
 	}
