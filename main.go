@@ -42,9 +42,9 @@ func main() {
 		log.Fatalf("unable to get token for service account: %v", err)
 	}
 
-	d := Detector{
+	d := WebhookXray{
 		config: config,
-		obj: &api.Postgres{
+		testObj: &api.Postgres{
 			TypeMeta: metav1.TypeMeta{
 				APIVersion: api.SchemeGroupVersion.String(),
 				Kind:       api.ResourceKindPostgres,
@@ -62,9 +62,13 @@ func main() {
 		},
 		op: v1beta1.Create,
 	}
-	d.check()
+	d.IsActive()
 
 	fmt.Println("DONE")
+
+	w := WebhookXray{}
+
+	var x2 PostconditionFunc = w.IsActive
 }
 
 /*
@@ -75,24 +79,30 @@ Create , PATCH, DELETE
 
 */
 
-type Detector struct {
+// PreconditionFunc returns true if the condition has been reached, false if it has not been reached yet,
+// or an error if the condition failed or detected an error state.
+type PostconditionFunc func() (bool, error)
+
+
+type WebhookXray struct {
 	config *rest.Config
-	obj runtime.Object
-	op v1beta1.OperationType
+
+	testObj   runtime.Object
+	op        v1beta1.OperationType
 	transform func(_ runtime.Object)
 }
 
-func (d Detector) check() error {
+func (d WebhookXray) IsActive() (bool, error) {
 	kc := kubernetes.NewForConfigOrDie(d.config)
 	dc, _ := dynamic.NewForConfig(d.config)
 
-	gvk := d.obj.GetObjectKind().GroupVersionKind()
+	gvk := d.testObj.GetObjectKind().GroupVersionKind()
 	fmt.Println("GVK = ", gvk)
 
 	gvr, _ := discovery.ResourceForGVK(kc.Discovery(), gvk)
 	fmt.Println("GVR = ", gvr)
 
-	accessor, _ := meta.Accessor(d.obj)
+	accessor, _ := meta.Accessor(d.testObj)
 
 	var ri dynamic.ResourceInterface
 
@@ -103,7 +113,7 @@ func (d Detector) check() error {
 	}
 
 	var buf bytes.Buffer
-	unstructured.UnstructuredJSONScheme.Encode(d.obj, &buf)
+	unstructured.UnstructuredJSONScheme.Encode(d.testObj, &buf)
 
 	u := unstructured.Unstructured{}
 	unstructured.UnstructuredJSONScheme.Decode(buf.Bytes(), nil, &u)
@@ -126,13 +136,13 @@ func (d Detector) check() error {
 		_, err := ri.Create(&u)
 		fmt.Println(err)
 
-		mod := d.obj.DeepCopyObject()
+		mod := d.testObj.DeepCopyObject()
 		d.transform(mod)
 		modJson, err := json.Marshal(mod)
 
 		patch, err := jsonpatch.CreateMergePatch(buf.Bytes(), modJson)
 		if err != nil {
-			return err
+			return false, err
 
 		}
 
@@ -163,7 +173,7 @@ func (d Detector) check() error {
 		}
 	}
 
-	return nil
+	return false, nil
 }
 
 func UpdateValidatingWebhookCABundle(config *rest.Config, name string) error {
