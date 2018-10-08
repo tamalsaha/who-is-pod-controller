@@ -1,5 +1,5 @@
 hash: ffaa3792fefcf3adbd84b9aaa302a00f7905e1bcd11425e60ce35b2eaf66fac8
-updated: 2018-10-04T14:33:21.513074256-07:00
+updated: 2018-10-08T06:03:15.348989602-07:00
 imports:
 - name: github.com/appscode/go
   version: 0499c350ad263174dc8c1e3006b2d3300ff398e6
@@ -14,7 +14,7 @@ imports:
 - name: github.com/appscode/jsonpatch
   version: 5af499cf01c842bfdd7761a433fc90525ccd6836
 - name: github.com/appscode/kutil
-  version: ab4a23e683a5b1c2d7f23f49b30c0316de8c7f94
+  version: cad796a750d7b905cdccdff9c85f333607757cbf
   subpackages:
   - admissionregistration/v1beta1
   - apiextensions/v1beta1
@@ -30,7 +30,7 @@ imports:
   subpackages:
   - log
 - name: github.com/evanphx/json-patch
-  version: 94e38aa1586e8a6c8a75770bddf5ff84c48a106b
+  version: afac545df32f2287a079e2dfb7ba2745a643747e
 - name: github.com/fatih/structs
   version: 4966fc68f5b7593aafa6cbbba2d65ec6e1416047
 - name: github.com/ghodss/yaml
@@ -40,7 +40,7 @@ imports:
 - name: github.com/go-openapi/jsonreference
   version: 13c6e3589ad90f49bd3e3bbe2c2cb3d7a4142272
 - name: github.com/go-openapi/spec
-  version: 1de3e0542de65ad8d75452a595886fdd0befb363
+  version: 5bae59e25b21498baea7f9d46e9c147ec106a42e
 - name: github.com/go-openapi/swag
   version: f3f9494671f93fcff853e3c6e9e948b3eb71e590
 - name: github.com/gogo/protobuf
@@ -49,7 +49,7 @@ imports:
   - proto
   - sortkeys
 - name: github.com/golang/glog
-  version: 44145f04b68cf362d9c4df2182967c2275eaefed
+  version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
 - name: github.com/golang/protobuf
   version: b4deda0973fb4c70b50d226b1af49f3da59f5265
   subpackages:
@@ -72,7 +72,7 @@ imports:
 - name: github.com/google/gofuzz
   version: 44d81051d367757e1c7c6a5a86423ece9afcf63c
 - name: github.com/google/uuid
-  version: 8c31c18f31ede9fc8eae72290a7e7a8064e9b3e3
+  version: 9b3b1e0f5f99ae461456d768e7d301a7acdaa2d8
 - name: github.com/googleapis/gnostic
   version: 0c5108395e2debce0d731cf0287ddf7242066aba
   subpackages:
@@ -92,7 +92,7 @@ imports:
 - name: github.com/json-iterator/go
   version: 1624edc4454b8682399def8740d46db5e4362ba4
 - name: github.com/kubedb/apimachinery
-  version: 233ace916ccf91dc14ef1abffe2d349e1c3e69ef
+  version: 1966edc8be1276105e0d9124f26e2dd0a0b5dbea
   subpackages:
   - apis
   - apis/kubedb
@@ -116,17 +116,19 @@ imports:
 - name: github.com/PuerkitoBio/urlesc
   version: 5bd2802263f21d8788851d5305584c82a5c75d7e
 - name: github.com/sergi/go-diff
-  version: 97b2266dfe4bd4ea1b81a463322f04f8b724801e
+  version: 24e2351369ec4949b2ed0dc5c477afdd4c4034e8
+  repo: https://github.com/sergi/go-diff
   subpackages:
   - diffmatchpatch
 - name: github.com/spf13/pflag
   version: 583c0c0531f06d5278b7d917446061adc344b5cd
 - name: github.com/yudai/gojsondiff
-  version: 7b1b7adf999dab73a6eb02669c3d82dbb27a3dd6
+  version: 0525c875b75ca60b9e67ddc44496aa16f21066b0
   subpackages:
   - formatter
 - name: github.com/yudai/golcs
   version: d1c525dea8ce39ea9a783d33cf08932305373f2c
+  repo: https://github.com/yudai/golcs
 - name: golang.org/x/crypto
   version: 49796115aa4b964c318aad4f3084fdb41e9aa067
   subpackages:
@@ -313,13 +315,23 @@ imports:
   - util/homedir
   - util/integer
   - util/retry
+- name: k8s.io/kube-aggregator
+  version: 07bfdba27d43fe6b7eea965213b3aad555de2457
+  subpackages:
+  - pkg/apis/apiregistration
+  - pkg/apis/apiregistration/v1
+  - pkg/apis/apiregistration/v1beta1
+  - pkg/client/clientset_generated/clientset
+  - pkg/client/clientset_generated/clientset/scheme
+  - pkg/client/clientset_generated/clientset/typed/apiregistration/v1
+  - pkg/client/clientset_generated/clientset/typed/apiregistration/v1beta1
 - name: k8s.io/kube-openapi
   version: 9dfdf9be683f61f82cda12362c44c784e0778b56
   subpackages:
   - pkg/common
   - pkg/util/proto
 - name: kmodules.xyz/custom-resources
-  version: 096f21cfaff6aca79255cda79fb4e23cd6386096
+  version: c4335a2fa9b1d61c2d2edeee8fa1a9bf732abceb
   repo: https://github.com/kmodules/custom-resources.git
   vcs: git
   subpackages:
